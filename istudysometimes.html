@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Productivity</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .time-display {
+            font-size: 1.8rem;
+            margin: 15px 0;
+            color: #ffecb3;
+        }
+
+        button {
+            background: #ffffff;
+            color: #6a11cb;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ffecb3;
+            color: #2575fc;
+        }
+
+        .info {
+            margin-top: 25px;
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .time-display {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Study Productivity</h1>
+        <div class="time-display" id="time">Time Studied: 00:00:00.000</div>
+        <div class="time-display" id="wasted">Time Wasted: 00:00:00.000</div>
+        <button onclick="startStudying()">Start Studying</button>
+        <button onclick="pauseStudying()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+        <div class="info">Track your study and wasted time effectively!</div>
+    </div>
+
+    <script>
+        let studyTime = 0;
+        let wastedTime = 0;
+        let studyTimer;
+        let wasteTimer;
+        let isStudying = false;
+        let isPaused = false;
+
+        function formatTime(milliseconds) {
+            const ms = milliseconds % 1000;
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+        }
+
+        function updateDisplay() {
+            document.getElementById('time').textContent = `Time Studied: ${formatTime(studyTime)}`;
+            document.getElementById('wasted').textContent = `Time Wasted: ${formatTime(wastedTime)}`;
+        }
+
+        function startStudying() {
+            if (isStudying) return;
+            isStudying = true;
+            isPaused = false;
+
+            clearInterval(wasteTimer);
+
+            studyTimer = setInterval(() => {
+                studyTime += 10;
+                updateDisplay();
+            }, 10);
+        }
+
+        function pauseStudying() {
+            if (!isStudying || isPaused) return;
+            isStudying = false;
+            isPaused = true;
+
+            clearInterval(studyTimer);
+
+            wasteTimer = setInterval(() => {
+                wastedTime += 10;
+                updateDisplay();
+            }, 10);
+        }
+
+        function resetTimer() {
+            clearInterval(studyTimer);
+            clearInterval(wasteTimer);
+            isStudying = false;
+            isPaused = false;
+            studyTime = 0;
+            wastedTime = 0;
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
